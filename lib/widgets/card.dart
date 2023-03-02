@@ -23,30 +23,34 @@ class CardWidget extends StatelessWidget {
         //     borderRadius: BorderRadius.all(Radius.circular(20.0))),
         child: ElevatedButton(
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(const Color(0xff08B0EC)),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(const Color(0xff08B0EC)),
               // foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  )
-              )
-          ),
-          onPressed: () {  },
+                borderRadius: BorderRadius.circular(20.0),
+              ))),
+          onPressed: () {},
           child: Stack(
             children: [
               Center(
                   child: Text(name,
-                      style: const TextStyle(color: Colors.white, fontSize: 24))),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 24))),
               Positioned(
                   bottom: 10,
                   right: 20,
                   child: Text("$balance₽",
-                      style: const TextStyle(color: Colors.white, fontSize: 24))),
+                      style:
+                          const TextStyle(color: Colors.white, fontSize: 24))),
               Positioned(
                   bottom: 10,
                   left: 20,
-                  child:
-                      Text("...$number", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18))),
+                  child: Text("...$number",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18))),
             ],
           ),
         ),

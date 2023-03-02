@@ -1,9 +1,22 @@
-import 'package:client/home.dart';
-import 'package:client/login.dart';
+import 'dart:io';
+
+import 'package:client/widgets/login.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  // Переопределяем политику сертификатов, потому что у меня самоподписанный сертификат, который не поддерживается
+  HttpOverrides.global = MyHttpOverrides();
+
   runApp(const MyApp());
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeWidget(),
+      home: const LoginWidget(),
     );
   }
 }
