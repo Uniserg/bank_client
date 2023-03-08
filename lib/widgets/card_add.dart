@@ -28,7 +28,7 @@ class CardAddWidget extends StatelessWidget {
                 )),
               ),
               onPressed: () {},
-              child: const Center(child: Text("Add"))),
+              child: const Center(child: Text("Заказать карту"))),
         ),
       ),
     );

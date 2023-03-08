@@ -1,3 +1,4 @@
+import 'package:client/vars/my_colors_dev.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
@@ -23,8 +24,7 @@ class CardWidget extends StatelessWidget {
         //     borderRadius: BorderRadius.all(Radius.circular(20.0))),
         child: ElevatedButton(
           style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color(0xff08B0EC)),
+              backgroundColor: MaterialStateProperty.all<Color>(myLightBlue),
               // foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(

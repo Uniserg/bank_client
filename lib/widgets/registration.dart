@@ -33,6 +33,9 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
   var login = FieldState();
   var password = FieldState();
 
+  var isAgree = false;
+  var agreementError = "";
+
   _makeRegisterRequest() async {
     var fields = {
       'lastName': lastName,
@@ -64,6 +67,14 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
     final isValidForm = formKey.currentState!.validate();
 
     if (!isValidForm) {
+      return;
+    }
+
+    if (!isAgree) {
+      setState(() {
+        agreementError =
+            "Необходимо согласие на обработку персональных данных.";
+      });
       return;
     }
 
@@ -113,7 +124,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
         onPressed: () {
           Navigator.pop(context);
         },
-        icon: Icon(Icons.arrow_back_ios),
+        icon: const Icon(Icons.arrow_back_ios),
         //replace with our own icon data.
       )),
       body: SingleChildScrollView(
@@ -227,10 +238,44 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
                     )
                   ],
                 ),
-                const SizedBox(height: 40),
-                SizedBox(
+                const SizedBox(
+                  height: 30,
+                ),
+                Wrap(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    children: [
+                      Text(
+                        overflow: TextOverflow.fade,
+                        "Я согласен на обработку персональных данных",
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                      Checkbox(
+                          checkColor: Colors.white,
+                          // fillColor: Theme.of(context).colorScheme.primary,
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                          value: isAgree,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isAgree = value!;
+                              agreementError = "";
+                            });
+                          }),
+                    ]),
+                Text(
+                  agreementError,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                Container(
                   width: 200,
                   height: 60,
+                  margin: const EdgeInsets.all(25),
                   child: ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -243,7 +288,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
                           borderRadius: BorderRadius.circular(50.0),
                         ))),
                     onPressed: () => _makeRegisterRequest(),
-                    child: const Text('Далее'),
+                    child: const Text('Отправить'),
                   ),
                 ),
               ],

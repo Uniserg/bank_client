@@ -25,8 +25,6 @@ class RegistrationForm {
       required this.login,
       required this.password});
 
-  // factory KeycloakAuth.fromJson(Map<String, dynamic> json) => _$KeycloakAuthFromJson(json);
-
   /// Connect the generated [_$PersonToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$RegistrationFormToJson(this);
 }

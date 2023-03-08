@@ -1,3 +1,9 @@
 import 'package:client/dto/keycloak_auth.dart';
 
-KeycloakAuth? keycloakAuth;
+// KeycloakAuth? keycloakAuth;
+
+String? accessToken;
+String? refreshToken;
+
+AccessTokenJWTContext? accessTokenContext;
+JwtContext? refreshTokenContext;

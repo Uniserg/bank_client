@@ -49,6 +49,7 @@ class _LoginWidgetState extends State<LoginWidget> {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+    Navigator.pop(context);
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const HomeWidget()));
 
@@ -83,7 +84,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                             controller: login.controller,
                             validator: loginValidator,
                             inputFormatters: [
-                              FilteringTextInputFormatter(RegExp(r'[^[A-Za-z\d_.@]'),
+                              FilteringTextInputFormatter(
+                                  RegExp(r'[^[A-Za-z\d_.@]'),
                                   allow: false),
                               LengthLimitingTextInputFormatter(35)
                             ],
@@ -99,9 +101,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                       ),
                     ),
                   ),
-
-                  Text(errorMessage,
-                    style: const TextStyle(color: Colors.redAccent),
+                  Text(
+                    errorMessage,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                   const SizedBox(
                     height: 60,
@@ -111,10 +114,12 @@ class _LoginWidgetState extends State<LoginWidget> {
                     height: 60,
                     child: ElevatedButton(
                       style: ButtonStyle(
+                          // backgroundColor: MaterialStateProperty.all<Color>(
+                          //     const Color(0xff08B0EC)),
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xff08B0EC)),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
+                              Theme.of(context).colorScheme.primary),
+                          foregroundColor: MaterialStateProperty.all<Color>(
+                              Theme.of(context).colorScheme.onPrimary),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -131,7 +136,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                     child: ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xffD8AC42)),
+                              Theme.of(context).primaryColor),
                           foregroundColor:
                               MaterialStateProperty.all<Color>(Colors.white),
                           shape:

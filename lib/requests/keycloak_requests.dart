@@ -1,31 +1,31 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dto/keycloak_auth.dart';
 import '../utils/jwt.dart';
 import '../vars/request_vars.dart';
 import '../vars/session_vars.dart';
 
-KeycloakAuth getKeycloakAuth(String body) {
+void saveAuth(String body) async {
   var authResponse = jsonDecode(body);
-  var accessToken = authResponse['access_token'];
-  var refreshToken = authResponse['refresh_token'];
+  accessToken = authResponse['access_token'];
+  refreshToken = authResponse['refresh_token'];
 
-  AccessTokenJWTContext authContext =
-      AccessTokenJWTContext.fromJson(parseJwt(accessToken));
+  final prefs = await SharedPreferences.getInstance();
 
-  return KeycloakAuth(
-      accessToken: accessToken,
-      accessTokenContext: authContext,
-      refreshToken: refreshToken,
-      refreshExp: parseJwt(refreshToken)['exp']);
+  await prefs.setString("accessToken", accessToken!);
+  await prefs.setString("refreshToken", refreshToken!);
+
+  accessTokenContext = AccessTokenJWTContext.fromJson(parseJwt(accessToken!));
+  refreshTokenContext = JwtContext.fromJson(parseJwt(accessToken!));
 }
 
 Future<String?> logIn(String login, String password) async {
   var loginForm = {
     'client_id': clientId,
-    'grant_type': grantType,
+    'grant_type': "password",
     'scope': scope,
     'username': login,
     'password': password
@@ -46,7 +46,8 @@ Future<String?> logIn(String login, String password) async {
 
   switch (response.statusCode) {
     case 200:
-      keycloakAuth = getKeycloakAuth(response.body);
+      saveAuth(response.body);
+
       return null;
     case 401:
       return "Неверный логин или пароль";
@@ -55,11 +56,23 @@ Future<String?> logIn(String login, String password) async {
   }
 }
 
-Future<String?> refreshToken() async {
-  if (keycloakAuth!.refreshExp < DateTime.now().microsecondsSinceEpoch) {
+Future<String?> logInWithRefreshToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  refreshToken = prefs.getString("refreshToken");
+  refreshTokenContext = JwtContext.fromJson(parseJwt(accessToken!));
+
+  if (refreshTokenContext!.exp < DateTime.now().microsecondsSinceEpoch) {
+    throw Exception("Auth timeout");
     // TODO: сделать как ошибку
     return "Auth timeout";
   }
+
+  var loginForm = {
+    'client_id': clientId,
+    'grant_type': "refresh_token",
+    'scope': scope,
+    'refresh_token': refreshToken
+  };
 
   var response = await http.post(
       Uri.parse(
@@ -69,11 +82,11 @@ Future<String?> refreshToken() async {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       encoding: Encoding.getByName("utf-8"),
-      body: keycloakAuth?.refreshToken);
+      body: loginForm);
 
   switch (response.statusCode) {
     case 200:
-      keycloakAuth = getKeycloakAuth(response.body);
+      saveAuth(response.body);
       return null;
     default:
       throw Exception(response.reasonPhrase);
