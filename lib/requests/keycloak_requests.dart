@@ -6,75 +6,115 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../dto/keycloak_auth.dart';
 import '../utils/jwt.dart';
 import '../vars/request_vars.dart';
-import '../vars/session_vars.dart';
 
-void saveAuth(String body) async {
-  var authResponse = jsonDecode(body);
-  accessToken = authResponse['access_token'];
-  refreshToken = authResponse['refresh_token'];
+class KeycloakAuth {
+  static String? _accessToken;
+  static String? _refreshToken;
+  static AccessTokenJWTContext? _accessTokenContext;
+  static JwtContext? _refreshTokenContext;
 
-  final prefs = await SharedPreferences.getInstance();
+  static Future<String?> getAccessToken() async {
+    if (_accessToken == null) {
+      final prefs = await SharedPreferences.getInstance();
+      _accessToken = prefs.getString("accessToken");
 
-  await prefs.setString("accessToken", accessToken!);
-  await prefs.setString("refreshToken", refreshToken!);
+      if (_accessToken == null) {
+        return null;
+      }
+      _accessTokenContext =
+          AccessTokenJWTContext.fromJson(parseJwt(_accessToken!));
+      if (_accessTokenContext!.exp * 1000 < DateTime.now().millisecondsSinceEpoch) {
+        _refreshToken ??= prefs.getString("refreshToken");
 
-  accessTokenContext = AccessTokenJWTContext.fromJson(parseJwt(accessToken!));
-  refreshTokenContext = JwtContext.fromJson(parseJwt(accessToken!));
-}
+        if (_refreshToken == null) {
+          return null;
+        }
 
-Future<String?> logIn(String login, String password) async {
-  var loginForm = {
-    'client_id': clientId,
-    'grant_type': "password",
-    'scope': scope,
-    'username': login,
-    'password': password
-  };
+        _refreshTokenContext = JwtContext.fromJson(parseJwt(_refreshToken!));
 
-  print(json.encode(loginForm));
+        if (_refreshTokenContext!.exp < DateTime.now().microsecondsSinceEpoch) {
+          clear();
+          return null;
+        }
 
-  var response = await http.post(
-    Uri.parse(
-        "http://$keycloakServerAddress/realms/bank-app/protocol/openid-connect/token"),
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    encoding: Encoding.getByName("utf-8"),
-    body: loginForm,
-  );
-
-  switch (response.statusCode) {
-    case 200:
-      saveAuth(response.body);
-
-      return null;
-    case 401:
-      return "Неверный логин или пароль";
-    default:
-      throw Exception(response.reasonPhrase);
-  }
-}
-
-Future<String?> logInWithRefreshToken() async {
-  final prefs = await SharedPreferences.getInstance();
-  refreshToken = prefs.getString("refreshToken");
-  refreshTokenContext = JwtContext.fromJson(parseJwt(accessToken!));
-
-  if (refreshTokenContext!.exp < DateTime.now().microsecondsSinceEpoch) {
-    throw Exception("Auth timeout");
-    // TODO: сделать как ошибку
-    return "Auth timeout";
+        return _getAccessTokenByRefreshToken();
+      }
+    } else {
+      return _accessToken;
+    }
+    return null;
   }
 
-  var loginForm = {
-    'client_id': clientId,
-    'grant_type': "refresh_token",
-    'scope': scope,
-    'refresh_token': refreshToken
-  };
+  static AccessTokenJWTContext? getAccessTokenContext() {
+    return _accessTokenContext;
+  }
 
-  var response = await http.post(
+  static clear() {
+    _accessToken = null;
+    _refreshToken = null;
+    _accessTokenContext = null;
+    _refreshTokenContext = null;
+  }
+
+  static Future<String> _getAccessTokenByRefreshToken() async {
+    var loginForm = {
+      'client_id': clientId,
+      'grant_type': "refresh_token",
+      'scope': scope,
+      'refresh_token': _refreshToken
+    };
+
+    var response = await http.post(
+        Uri.parse(
+            "http://$keycloakServerAddress/realms/bank-app/protocol/openid-connect/token"),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        encoding: Encoding.getByName("utf-8"),
+        body: loginForm);
+
+    switch (response.statusCode) {
+      case 200:
+        var ka = KeycloakAuthDto.fromJson(json.decode(response.body));
+        _saveAuth(ka);
+        return ka.accessToken;
+      default:
+        throw Exception(response.reasonPhrase);
+    }
+  }
+
+  static void _saveAuth(KeycloakAuthDto ka) async {
+    _accessToken = ka.accessToken;
+    _refreshToken = ka.refreshToken;
+    _accessTokenContext =
+        AccessTokenJWTContext.fromJson(parseJwt(_accessToken!));
+    _refreshTokenContext = JwtContext.fromJson(parseJwt(_refreshToken!));
+
+    final prefs = await SharedPreferences.getInstance();
+
+    print("Сохраняем accessToken... - $_accessToken");
+
+    prefs.setString("accessToken", _accessToken!);
+    prefs.setString("refreshToken", _refreshToken!);
+
+    String? token = await getAccessToken();
+    print("ПРОВЕРКА: ${token}");
+
+    print("ЧТО ЗАПИСАНО? - ${prefs.getString("accessToken")}");
+  }
+
+  static Future<String?> logIn(String login, String password) async {
+    var loginForm = {
+      'client_id': clientId,
+      'grant_type': "password",
+      'scope': scope,
+      'username': login,
+      'password': password
+    };
+
+    var response = http
+        .post(
       Uri.parse(
           "http://$keycloakServerAddress/realms/bank-app/protocol/openid-connect/token"),
       headers: {
@@ -82,13 +122,19 @@ Future<String?> logInWithRefreshToken() async {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       encoding: Encoding.getByName("utf-8"),
-      body: loginForm);
-
-  switch (response.statusCode) {
-    case 200:
-      saveAuth(response.body);
-      return null;
-    default:
-      throw Exception(response.reasonPhrase);
+      body: loginForm,
+    )
+        .then((response) {
+      switch (response.statusCode) {
+        case 200:
+          _saveAuth(KeycloakAuthDto.fromJson(jsonDecode(response.body)));
+          return null;
+        case 401:
+          return "Неверный логин или пароль";
+        default:
+          return response.reasonPhrase;
+      }
+    }).onError((error, stackTrace) => error.toString());
+    return response;
   }
 }

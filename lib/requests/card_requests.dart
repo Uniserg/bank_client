@@ -1,14 +1,14 @@
 import 'dart:convert';
 
+import 'package:client/requests/keycloak_requests.dart';
 import 'package:http/http.dart' as http;
 
 import '../dto/debit_card.dart';
 import '../vars/request_vars.dart';
-import '../vars/session_vars.dart';
 
 Future<List<DebitCard>> getDebitCards(int skip, int limit) async {
   var uri =
-      "http://$appServerAddress/individuals/${accessTokenContext!.sub}/debit_cards?skip=$skip&limit=$limit";
+      "http://$appServerAddress/individuals/${KeycloakAuth.getAccessTokenContext()!.sub}/debit_cards?skip=$skip&limit=$limit";
 
   print(uri);
 

@@ -22,3 +22,8 @@ String? Function(String? login) loginValidator =
 
 String? Function(String? password) passwordValidator =
     (password) => (password!.length < 6) ? "Не менее 6 символов" : null;
+
+String? Function(String? date) dateValidator =
+    (date) => (date!.length < 12) ? "Неверная дата" : null;
+
+

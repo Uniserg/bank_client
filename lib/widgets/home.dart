@@ -1,9 +1,13 @@
 import 'package:client/requests/card_requests.dart';
-import 'package:client/vars/session_vars.dart';
+import 'package:client/requests/keycloak_requests.dart';
+import 'package:client/vars/my_colors_dev.dart';
+import 'package:client/widgets/button.dart';
 import 'package:client/widgets/card.dart';
 import 'package:client/widgets/card_add.dart';
+import 'package:client/widgets/orders.dart';
 import 'package:client/widgets/search.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dto/debit_card.dart';
@@ -23,6 +27,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   void _logOut() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    KeycloakAuth.clear();
   }
 
   Future _updateSavedCard() async {
@@ -63,8 +68,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     onPressed: () {
                       _logOut();
 
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                      Navigator.popUntil(context, (route) => false);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -101,7 +105,8 @@ class _HomeWidgetState extends State<HomeWidget> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text("Добро пожаловать, ${accessTokenContext!.firstName}"),
+          title: Text(
+              "Добро пожаловать, ${KeycloakAuth.getAccessTokenContext()!.firstName}"),
           toolbarHeight: 100,
           centerTitle: true,
           leading: IconButton(
@@ -114,6 +119,28 @@ class _HomeWidgetState extends State<HomeWidget> {
             //replace with our own icon data.
           )),
       resizeToAvoidBottomInset: false,
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        surfaceTintColor: Theme.of(context).colorScheme.onPrimary,
+        shadowColor: Theme.of(context).colorScheme.onPrimary,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home, color: beige),
+            label: 'Главная',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.chat, color: beige),
+            label: 'Чат',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings, color: beige),
+            label: 'Настройки',
+          )
+        ],
+        // currentIndex: _selectedIndex,
+        // selectedItemColor: Colors.amber[800],
+        // onTap: _onItemTapped,
+      ),
       body: RefreshIndicator(
         onRefresh: _updateSavedCard,
         child: ListView(
@@ -134,8 +161,24 @@ class _HomeWidgetState extends State<HomeWidget> {
                 SizedBox(width: 15),
               ],
             ),
+
             Container(
-              margin: const EdgeInsets.only(top: 100, left: 5, right: 5),
+              margin: EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  MyButton(onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const OrderPage())
+                    );
+                  },),
+                ],
+              ),
+            ),
+
+
+            Container(
+              margin: const EdgeInsets.only(top: 50, left: 5, right: 5),
               height: 200,
               decoration: const ShapeDecoration(
                   color: Color(0xffF5F0E5),
@@ -150,9 +193,21 @@ class _HomeWidgetState extends State<HomeWidget> {
                   else
                     for (var card in _savedCards)
                       CardWidget(
+                        margin: const EdgeInsets.only(left: 20),
                         name: card.productName,
                         number: card.number.substring(card.number.length - 4),
                         balance: 0,
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) =>
+                                  CardDetailsWidget(
+                                      number: card.number,
+                                      holderName: card.holderName,
+                                      expirationDate: DateFormat("MM/yy").format(card.expirationDate),
+                                      cvv: card.cvv.toInt(),
+                                      isActive: card.active,
+                                      productName: card.productName)));
+                        },
                       ),
                   const CardAddWidget(),
                 ],

@@ -28,7 +28,8 @@ class _LoginWidgetState extends State<LoginWidget> {
       return;
     }
 
-    String? err = await logIn(login.controller.text, password.controller.text);
+    String? err = await KeycloakAuth.logIn(
+        login.controller.text, password.controller.text);
 
     if (err != null) {
       print(err);

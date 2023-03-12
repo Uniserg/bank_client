@@ -1,14 +1,11 @@
 import 'dart:io';
 
 import 'package:client/requests/keycloak_requests.dart';
-import 'package:client/utils/jwt.dart';
-import 'package:client/vars/session_vars.dart';
 import 'package:client/widgets/home.dart';
 import 'package:client/widgets/login.dart';
+import 'package:client/widgets/orders.dart';
+import 'package:client/widgets/products.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'dto/keycloak_auth.dart';
 
 void main() {
   // Переопределяем политику сертификатов, потому что у меня самоподписанный сертификат, который не поддерживается
@@ -26,37 +23,29 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void _makeAutologin() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  accessToken = prefs.getString("accessToken");
-
-  if (accessToken == null) {
-    return;
-  }
-
-  accessTokenContext = AccessTokenJWTContext.fromJson(parseJwt(accessToken!));
-
-  if (accessTokenContext!.exp < DateTime.now().microsecondsSinceEpoch) {
-    logInWithRefreshToken();
-  }
-}
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    _makeAutologin();
 
-    var widget =
-        (accessToken == null) ? const LoginWidget() : const HomeWidget();
+    var home = FutureBuilder<String?>(
+      builder: (context, snapshot) {
+
+        if (snapshot.data != null) {
+          return const HomeWidget();
+        } else {
+          return const LoginWidget();
+        }
+      },
+      future: KeycloakAuth.getAccessToken(),
+    );
 
     return MaterialApp(
       title: 'Bank app',
       theme: ThemeData(
           primarySwatch: Colors.blue, primaryColor: const Color(0xffD8AC42)),
-      home: widget,
+      home: home,
     );
   }
 }

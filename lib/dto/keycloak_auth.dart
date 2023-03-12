@@ -4,13 +4,6 @@ part 'keycloak_auth.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class AccessTokenJWTContext extends JwtContext {
-  // String sub;
-  // int exp;
-  // int iat;
-  // String jti;
-  // String sid;
-  // String name;
-  // String email;
   @JsonKey(name: "family_name")
   String lastName;
   @JsonKey(name: "given_name")
@@ -48,15 +41,13 @@ class JwtContext {
       _$JwtContextFromJson(json);
 }
 
-class KeycloakAuth {
-  String accessToken;
-  String refreshToken;
-  int refreshExp;
-  AccessTokenJWTContext accessTokenContext;
+@JsonSerializable(fieldRename: FieldRename.snake)
+class KeycloakAuthDto {
+  final String accessToken;
+  final String refreshToken;
 
-  KeycloakAuth(
-      {required this.accessToken,
-      required this.accessTokenContext,
-      required this.refreshToken,
-      required this.refreshExp});
+  KeycloakAuthDto({required this.accessToken, required this.refreshToken});
+
+  factory KeycloakAuthDto.fromJson(Map<String, dynamic> json) =>
+      _$KeycloakAuthDtoFromJson(json);
 }
