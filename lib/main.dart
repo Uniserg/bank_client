@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:client/requests/keycloak_requests.dart';
 import 'package:client/widgets/home.dart';
 import 'package:client/widgets/login.dart';
-import 'package:client/widgets/orders.dart';
-import 'package:client/widgets/products.dart';
 import 'package:flutter/material.dart';
 
 void main() {

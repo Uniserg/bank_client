@@ -5,13 +5,13 @@ import 'package:client/widgets/card.dart';
 import 'package:client/widgets/registration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../dto/product.dart';
 import '../requests/product_order_requests.dart';
 import '../requests/product_requеsts.dart';
 import 'custom_text_field.dart';
-import 'package:intl/intl.dart';
 
 class ProductWidget extends StatefulWidget {
   final String name;
