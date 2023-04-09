@@ -17,32 +17,37 @@ class KeycloakAuth {
     if (_accessToken == null) {
       final prefs = await SharedPreferences.getInstance();
       _accessToken = prefs.getString("accessToken");
+    }
 
-      if (_accessToken == null) {
+    if (_accessToken == null) {
+      return null;
+    }
+
+    _accessTokenContext =
+        AccessTokenJWTContext.fromJson(parseJwt(_accessToken!));
+
+    if (_accessTokenContext!.exp * 1000 <
+        DateTime.now().millisecondsSinceEpoch) {
+      final prefs = await SharedPreferences.getInstance();
+
+      _refreshToken ??= prefs.getString("refreshToken");
+
+      if (_refreshToken == null) {
         return null;
       }
-      _accessTokenContext =
-          AccessTokenJWTContext.fromJson(parseJwt(_accessToken!));
-      if (_accessTokenContext!.exp * 1000 < DateTime.now().millisecondsSinceEpoch) {
-        _refreshToken ??= prefs.getString("refreshToken");
 
-        if (_refreshToken == null) {
-          return null;
-        }
+      _refreshTokenContext = JwtContext.fromJson(parseJwt(_refreshToken!));
 
-        _refreshTokenContext = JwtContext.fromJson(parseJwt(_refreshToken!));
-
-        if (_refreshTokenContext!.exp < DateTime.now().microsecondsSinceEpoch) {
-          clear();
-          return null;
-        }
-
-        return _getAccessTokenByRefreshToken();
+      if (_refreshTokenContext!.exp * 1000 <
+          DateTime.now().millisecondsSinceEpoch) {
+        clear();
+        return null;
       }
-    } else {
-      return _accessToken;
+      var refreshToken = await _getAccessTokenByRefreshToken();
+      return refreshToken;
     }
-    return null;
+
+    return _accessToken;
   }
 
   static AccessTokenJWTContext? getAccessTokenContext() {
@@ -93,15 +98,8 @@ class KeycloakAuth {
 
     final prefs = await SharedPreferences.getInstance();
 
-    print("Сохраняем accessToken... - $_accessToken");
-
     prefs.setString("accessToken", _accessToken!);
     prefs.setString("refreshToken", _refreshToken!);
-
-    String? token = await getAccessToken();
-    print("ПРОВЕРКА: ${token}");
-
-    print("ЧТО ЗАПИСАНО? - ${prefs.getString("accessToken")}");
   }
 
   static Future<String?> logIn(String login, String password) async {
@@ -121,7 +119,6 @@ class KeycloakAuth {
         "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
       },
-      encoding: Encoding.getByName("utf-8"),
       body: loginForm,
     )
         .then((response) {

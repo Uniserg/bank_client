@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   double? width;
   String? errorText;
+  Color? color;
 
   CustomTextField(
       {super.key,
@@ -20,10 +21,15 @@ class CustomTextField extends StatelessWidget {
       this.inputFormatters,
       this.validator,
       this.errorText,
-      this.width = 300});
+      this.width = 300,
+        this.color
+      });
 
   @override
   Widget build(BuildContext context) {
+
+    color ??= Theme.of(context).primaryColor;
+
     return SizedBox(
       width: width,
       child: TextFormField(
@@ -37,9 +43,9 @@ class CustomTextField extends StatelessWidget {
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(50.0)),
           ),
-          enabledBorder: const OutlineInputBorder(
-            borderSide: BorderSide(width: 3, color: Color(0xffD8AC42)),
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 3, color: color!),
+            borderRadius: const BorderRadius.all(Radius.circular(50.0)),
           ),
           labelText: labelText,
           errorText: errorText,

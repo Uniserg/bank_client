@@ -4,17 +4,19 @@ part 'debit_card.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class DebitCard {
-  String number;
-  String holderName;
-  DateTime expirationDate;
-  double cvv;
+  final String number;
+  final String holderName;
+  final DateTime expirationDate;
+  double balance;
+  final int cvv;
   bool active;
-  String productName;
+  final String productName;
 
   DebitCard(
       {required this.number,
       required this.holderName,
       required this.expirationDate,
+      required this.balance,
       required this.cvv,
       required this.active,
       required this.productName});

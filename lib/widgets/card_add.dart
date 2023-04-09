@@ -2,23 +2,15 @@ import 'package:client/widgets/products.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
-class CardAddWidget extends StatefulWidget {
+class CardAddWidget extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
-  const CardAddWidget({
-    super.key,
-    this.margin = const EdgeInsets.only(left:20, right: 20)
-  });
+  const CardAddWidget(
+      {super.key, this.margin = const EdgeInsets.only(left: 20, right: 20)});
 
-  @override
-  State<CardAddWidget> createState() => _CardAddWidgetState();
-}
-
-class _CardAddWidgetState extends State<CardAddWidget> {
   @override
   Widget build(BuildContext context) {
     var productsList = Scaffold(
-        // insetPadding: EdgeInsets.all(5),
         appBar: AppBar(
           title: Row(
             children: const [
@@ -41,7 +33,7 @@ class _CardAddWidgetState extends State<CardAddWidget> {
 
     return UnconstrainedBox(
       child: Container(
-        margin: widget.margin,
+        margin: margin,
         width: 250,
         height: 150,
         child: DottedBorder(

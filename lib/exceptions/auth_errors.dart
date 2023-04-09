@@ -1,4 +1,9 @@
-class AuthTimeoutException implements Exception {
+class NoAuthException implements Exception {
   String cause;
-  AuthTimeoutException(this.cause);
+  NoAuthException(this.cause);
+}
+
+class ForbiddenException implements Exception {
+  String cause;
+  ForbiddenException(this.cause);
 }

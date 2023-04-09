@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'package:client/notifications/socket.dart';
 import 'package:client/requests/keycloak_requests.dart';
 import 'package:client/widgets/home.dart';
 import 'package:client/widgets/login.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+
+import 'exceptions/auth_errors.dart';
 
 void main() {
   // Переопределяем политику сертификатов, потому что у меня самоподписанный сертификат, который не поддерживается
@@ -21,29 +25,42 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-    var home = FutureBuilder<String?>(
-      builder: (context, snapshot) {
-
-        if (snapshot.data != null) {
-          return const HomeWidget();
-        } else {
-          return const LoginWidget();
-        }
-      },
-      future: KeycloakAuth.getAccessToken(),
-    );
-
     return MaterialApp(
-      title: 'Bank app',
-      theme: ThemeData(
-          primarySwatch: Colors.blue, primaryColor: const Color(0xffD8AC42)),
-      home: home,
-    );
+        scrollBehavior: ScrollConfiguration.of(context).copyWith(
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.trackpad
+          },
+        ),
+      navigatorKey: navigatorKey,
+        title: 'Bank app',
+        theme: ThemeData(
+            primarySwatch: Colors.blue, primaryColor: const Color(0xffD8AC42),
+        ),
+        home: FutureBuilder(
+            future: KeycloakAuth.getAccessToken(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const CircularProgressIndicator();
+              }
+
+              if (snapshot.data == null ||
+                  snapshot.error.runtimeType == NoAuthException) {
+                return const LoginWidget();
+              }
+
+              openSocketChannel();
+
+              return const HomeWidget();
+            }));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:client/main.dart';
 import 'package:client/utils/validators.dart';
 import 'package:client/vars/request_vars.dart';
 import 'package:client/widgets/home.dart';
@@ -5,6 +6,7 @@ import 'package:client/widgets/registration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../notifications/socket.dart';
 import '../requests/keycloak_requests.dart';
 import 'custom_text_field.dart';
 
@@ -49,6 +51,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    openSocketChannel();
 
     Navigator.pop(context);
     Navigator.push(

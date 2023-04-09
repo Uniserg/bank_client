@@ -1,4 +1,5 @@
-const String hostIp = "192.168.3.2";
+// const String hostIp = "192.168.3.2";
+const String hostIp = "192.168.85.19";
 const String appServerAddress = "$hostIp:8080";
 const String keycloakServerAddress = "$hostIp:8180";
 const String clientId = "bank-client";

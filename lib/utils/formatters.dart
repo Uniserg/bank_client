@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 final phoneNumberFormatter = MaskTextInputFormatter(
@@ -11,3 +12,5 @@ final nameFormatter = TextInputFormatter.withFunction(
     return RegExp(r'[^А-Яа-я]').hasMatch(newValue.text) ? newValue : oldValue;
   },
 );
+
+final dateFormatter = DateFormat("dd.MM.yyyy HH:mm");

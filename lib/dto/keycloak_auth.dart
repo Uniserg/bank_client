@@ -8,15 +8,21 @@ class AccessTokenJWTContext extends JwtContext {
   String lastName;
   @JsonKey(name: "given_name")
   String firstName;
+  String email;
+  @JsonKey(name: "preferred_username")
+  String login;
 
-  AccessTokenJWTContext(
-      {required super.sub,
-      required super.exp,
-      required super.iat,
-      required super.jti,
-      required super.sid,
-      required this.lastName,
-      required this.firstName});
+  AccessTokenJWTContext({
+    required super.sub,
+    required super.exp,
+    required super.iat,
+    required super.jti,
+    required super.sid,
+    required this.lastName,
+    required this.firstName,
+    required this.email,
+    required this.login,
+  });
 
   factory AccessTokenJWTContext.fromJson(Map<String, dynamic> json) =>
       _$AccessTokenJWTContextFromJson(json);

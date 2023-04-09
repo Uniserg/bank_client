@@ -25,5 +25,3 @@ String? Function(String? password) passwordValidator =
 
 String? Function(String? date) dateValidator =
     (date) => (date!.length < 12) ? "Неверная дата" : null;
-
-

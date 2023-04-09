@@ -1,5 +1,6 @@
 import 'package:client/dto/product_order.dart';
-import 'package:client/requests/keycloak_requests.dart';
+import 'package:client/requests/request_f.dart';
+import 'package:client/utils/formatters.dart';
 import 'package:client/utils/validators.dart';
 import 'package:client/widgets/card.dart';
 import 'package:client/widgets/registration.dart';
@@ -45,33 +46,28 @@ class _ProductWidgetState extends State<ProductWidget> {
       return;
     }
 
-    String? accessToken = await KeycloakAuth.getAccessToken();
-
-    if (accessToken == null) {
-      throw Exception("Не авторизован");
-    }
-
     ProductOrder productOrder = ProductOrder(
-        userSub: KeycloakAuth.getAccessTokenContext()!.sub,
         productName: widget.name,
         address: address.controller.text,
-        scheduledDate: DateFormat("dd.MM.yyyy hh:mm").parse(scheduledDate.controller.text)
-    );
+        scheduledDate: dateFormatter
+            .parse(scheduledDate.controller.text));
 
-    bool success = await createProductOrder(productOrder);
+    bool success = await makeRequestWithAuth(
+        context, (token) => createProductOrder(token, productOrder));
 
     if (success) {
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            icon: Column(
-              children: [
-                Icon(Icons.access_time_filled),
-              ],
-            ),
-            title: Text("Заявка отправлена"),
-            content: Text('Ваша заявка ожидает подтвеждения. Вы можете отследить статус заявки в разделе "Заявки"'),
-          ));
+                icon: Column(
+                  children: [
+                    Icon(Icons.access_time_filled),
+                  ],
+                ),
+                title: Text("Заявка отправлена"),
+                content: Text(
+                    'Ваша заявка ожидает подтвеждения. Вы можете отследить статус заявки в разделе "Заявки"'),
+              ));
     }
   }
 
@@ -119,32 +115,32 @@ class _ProductWidgetState extends State<ProductWidget> {
             ),
             const SizedBox(height: 70),
             Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    CustomTextField(
-                      labelText: "Адрес",
-                      controller: address.controller,
-                      validator: nameValidator,
+              key: formKey,
+              child: Column(
+                children: [
+                  CustomTextField(
+                    labelText: "Адрес",
+                    controller: address.controller,
+                    validator: nameValidator,
+                    inputFormatters: [
+                      FilteringTextInputFormatter(RegExp(r'[^[А-Яа-я\d. ]'),
+                          allow: false),
+                      LengthLimitingTextInputFormatter(130)
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  CustomTextField(
+                      labelText: "Дата и время",
+                      controller: scheduledDate.controller,
+                      validator: dateValidator,
                       inputFormatters: [
-                        FilteringTextInputFormatter(RegExp(r'[^[А-Яа-я\d. ]'),
-                            allow: false),
-                        LengthLimitingTextInputFormatter(130)
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    CustomTextField(
-                        labelText: "Дата и время",
-                        controller: scheduledDate.controller,
-                        validator: dateValidator,
-                        inputFormatters: [
-                          MaskTextInputFormatter(
-                              mask: '##.##.#### ##:##',
-                              filter: {"#": RegExp(r'\d')},
-                              type: MaskAutoCompletionType.lazy),
-                        ]),
-                  ],
-                ),
+                        MaskTextInputFormatter(
+                            mask: '##.##.#### ##:##',
+                            filter: {"#": RegExp(r'\d')},
+                            type: MaskAutoCompletionType.lazy),
+                      ]),
+                ],
+              ),
             ),
             const SizedBox(height: 50),
             SizedBox(

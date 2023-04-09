@@ -99,8 +99,6 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
       case 409:
         const pattern = "Пользователь с таким значением уже существует";
 
-        print(pattern);
-
         var conflictFields = response.body;
 
         conflictFields.split(" ,").forEach((field) {
