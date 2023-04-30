@@ -70,34 +70,31 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ),
                 const Expanded(child: SearchWidget()),
                 const SizedBox(width: 15),
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "https://www.bethowen.ru/upload/iblock/63f/63f2f01ca6828d9574995f549d89a2e0.jpeg"),
-                  minRadius: 40,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MyProfilePage(
-                                    lastName:
-                                        KeycloakAuth.getAccessTokenContext()!
-                                            .firstName,
-                                    firstName:
-                                        KeycloakAuth.getAccessTokenContext()!
-                                            .lastName,
-                                    email: KeycloakAuth.getAccessTokenContext()!
-                                        .email,
-                                  )));
-                    },
-                    child: null,
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(50),
-                      shape: const CircleBorder(),
-                      backgroundColor: Colors.transparent, // <-- Button color
-                      foregroundColor:
-                          Theme.of(context).primaryColor, // <-- Splash color
-                    ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyProfilePage(
+                                  lastName:
+                                      KeycloakAuth.getAccessTokenContext()!
+                                          .firstName,
+                                  firstName:
+                                      KeycloakAuth.getAccessTokenContext()!
+                                          .lastName,
+                                  email: KeycloakAuth.getAccessTokenContext()!
+                                      .email,
+                                )));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    // padding: const EdgeInsets.all(50),
+                    shape: const CircleBorder(),
+                    backgroundColor: Colors.transparent, // <-- Button color
+                    foregroundColor: Colors.transparent, // <-- Splash color
+                  ),
+                  child: const CircleAvatar(
+                    backgroundImage: AssetImage("assets/images/profile.png"),
+                    minRadius: 40,
                   ),
                 ),
 

@@ -7,7 +7,7 @@ import '../vars/request_vars.dart';
 
 Future<http.Response> register(RegistrationForm registrationForm) async {
   return http.post(
-    Uri.parse("http://$appServerAddress/individuals/register"),
+    Uri.parse("$protocol://$appServerAddress/individuals/register"),
     headers: <String, String>{
       'Content-Type': 'application/json',
     },

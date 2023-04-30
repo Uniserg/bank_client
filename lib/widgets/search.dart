@@ -187,7 +187,7 @@ class SelectCardPage extends StatelessWidget {
                     title: Text(
                         "${profile.lastName} ${profile.firstName}"),
                     subtitle: Center(child: FoundCardsDropdownList(cardNumbers: cardNumbers)),
-                    leading: const CircleAvatar(),
+                    leading: const CircleAvatar(backgroundImage: AssetImage("assets/images/profile.png"),),
                   )),
             ),
           ),

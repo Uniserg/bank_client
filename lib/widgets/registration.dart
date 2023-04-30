@@ -41,7 +41,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
       'lastName': lastName,
       'firstName': firstName,
       'middleName': middleName,
-      ' email': email,
+      'email': email,
       'phoneNumber': phoneNumber,
       'passport': passport,
       'inn': inn,
@@ -101,7 +101,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
 
         var conflictFields = response.body;
 
-        conflictFields.split(" ,").forEach((field) {
+        conflictFields.split(",").forEach((field) {
           print(field);
           setState(() {
             fields[field]!.error = pattern;
@@ -118,6 +118,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Зарегистрироваться"),
           leading: IconButton(
         onPressed: () {
           Navigator.pop(context);
@@ -131,7 +132,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
             key: formKey,
             child: Column(
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
                 Wrap(
                   direction: Axis.vertical,
                   spacing: 12,
@@ -237,7 +238,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
                   ],
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 10,
                 ),
                 Wrap(
                     // mainAxisAlignment: MainAxisAlignment.center,
@@ -273,7 +274,7 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
                 Container(
                   width: 200,
                   height: 60,
-                  margin: const EdgeInsets.all(25),
+                  margin: const EdgeInsets.all(15),
                   child: ElevatedButton(
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(

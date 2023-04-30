@@ -213,7 +213,7 @@ class _TransferMoneyWidgetState extends State<TransferMoneyWidget> {
                         subtitle: Text("•" * 12 +
                             widget.selectedCardNumberTo.substring(
                                 widget.selectedCardNumberTo.length - 4)),
-                        leading: const CircleAvatar(),
+                        leading: const CircleAvatar(backgroundImage: AssetImage("assets/images/profile.png"),),
                       )),
                     ],
                   ),

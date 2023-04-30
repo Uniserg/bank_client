@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../vars/request_vars.dart';
 
 Future<Transfer> createTransfer(String accessToken, Transfer transfer) async {
-  var uri = "http://$appServerAddress/debit_cards/transfer";
+  var uri = "$protocol://$appServerAddress/debit_cards/transfer";
 
   var response = await http.post(Uri.parse(uri),
       headers: {

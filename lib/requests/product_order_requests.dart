@@ -6,12 +6,12 @@ import 'package:http/http.dart' as http;
 
 import '../vars/request_vars.dart';
 
-const productOrderUri = "http://$appServerAddress/product_orders/";
+const productOrderUri = "$protocol://$appServerAddress/product_orders/";
 
 Future<List<ProductOrder>> getProductOrders(
     String accessToken, int skip, int limit) async {
   var uri =
-      "http://$appServerAddress/individuals/me/product_orders?skip=$skip&limit=$limit";
+      "$protocol://$appServerAddress/individuals/me/product_orders?skip=$skip&limit=$limit";
 
   var response = await http.get(
     Uri.parse(uri),
@@ -40,7 +40,7 @@ Future<List<ProductOrder>> getProductOrders(
 
 Future<bool> createProductOrder(
     String accessToken, ProductOrder productOrder) async {
-  var uri = "http://$appServerAddress/product_orders";
+  var uri = "$protocol://$appServerAddress/product_orders";
 
   var response = await http.post(Uri.parse(uri),
       headers: {

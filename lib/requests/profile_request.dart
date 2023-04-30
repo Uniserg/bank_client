@@ -8,7 +8,7 @@ import '../vars/request_vars.dart';
 
 Future<Profile?> findProfileByPhoneNumber(String accessToken, String phoneNumber) async {
   var uri =
-      "http://$appServerAddress/individuals/search/phone/$phoneNumber";
+      "$protocol://$appServerAddress/individuals/search/phone/$phoneNumber";
 
   var response = await http.get(
     Uri.parse(uri),
@@ -35,7 +35,7 @@ Future<Profile?> findProfileByPhoneNumber(String accessToken, String phoneNumber
 Future<Profile?> findProfileByCardNumber(
     String accessToken, String cardNumber) async {
   var uri =
-      "http://$appServerAddress/individuals/search/card_number/$cardNumber";
+      "$protocol://$appServerAddress/individuals/search/card_number/$cardNumber";
 
   var response = await http.get(
     Uri.parse(uri),

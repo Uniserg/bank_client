@@ -11,7 +11,7 @@ import '../vars/request_vars.dart';
 Future<List<DebitCard>> getDebitCards(
     String accessToken, int skip, int limit) async {
   var uri =
-      "http://$appServerAddress/individuals/me/debit_cards?skip=$skip&limit=$limit";
+      "$protocol://$appServerAddress/individuals/me/debit_cards?skip=$skip&limit=$limit";
 
   var response = await http.get(
     Uri.parse(uri),
@@ -39,7 +39,7 @@ Future<List<DebitCard>> getDebitCards(
 Future<AccountRequisites> getAccountRequisitesByCardNumber(
     String accessToken, String cardNumber) async {
   var uri =
-      "http://$appServerAddress/individuals/me/debit_cards/$cardNumber/account_requisites";
+      "$protocol://$appServerAddress/individuals/me/debit_cards/$cardNumber/account_requisites";
 
   var response = await http.get(
     Uri.parse(uri),
@@ -65,7 +65,7 @@ Future<AccountRequisites> getAccountRequisitesByCardNumber(
 Future<List<Transfer>> getAllTransfersByCardNumber(
     String accessToken, String cardNumber, int skip, int limit) async {
   var uri =
-      "http://$appServerAddress/debit_cards/$cardNumber/account_operations?skip=$skip&limit=$limit";
+      "$protocol://$appServerAddress/debit_cards/$cardNumber/account_operations?skip=$skip&limit=$limit";
   
   print(uri);
 
@@ -97,7 +97,7 @@ Future<List<Transfer>> getAllTransfersByCardNumber(
 
 Future<List<String>> getAllCardNumbersByUserSub(String accessToken, String userSub) async {
   var uri =
-      "http://$appServerAddress/debit_cards/search?user_sub=$userSub";
+      "$protocol://$appServerAddress/debit_cards/search/$userSub";
 
 
   print(uri);

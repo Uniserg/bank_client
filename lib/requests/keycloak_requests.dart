@@ -71,7 +71,7 @@ class KeycloakAuth {
 
     var response = await http.post(
         Uri.parse(
-            "http://$keycloakServerAddress/realms/bank-app/protocol/openid-connect/token"),
+            "$protocol://$keycloakServerAddress"),
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -114,7 +114,7 @@ class KeycloakAuth {
     var response = http
         .post(
       Uri.parse(
-          "http://$keycloakServerAddress/realms/bank-app/protocol/openid-connect/token"),
+          "$protocol://$keycloakServerAddress"),
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded"

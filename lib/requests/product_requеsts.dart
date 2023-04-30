@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import '../vars/request_vars.dart';
 
 Future<List<Product>> getProducts(int skip, int limit) async {
-  var uri = "http://$appServerAddress/products";
+  var uri = "$protocol://$appServerAddress/products";
 
   var response = await http.get(
     Uri.parse(uri),

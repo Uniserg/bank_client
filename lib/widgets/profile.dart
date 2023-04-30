@@ -1,4 +1,5 @@
 import 'package:client/dto/profile.dart';
+import 'package:client/notifications/socket.dart';
 import 'package:client/widgets/friends.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -134,8 +135,7 @@ class ProfilePage extends StatelessWidget {
               const Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(
-                      "https://www.bethowen.ru/upload/iblock/63f/63f2f01ca6828d9574995f549d89a2e0.jpeg"),
+                  backgroundImage: AssetImage("assets/images/profile.png"),
                 ),
               ),
               Text(
@@ -176,6 +176,7 @@ class MyProfilePage extends StatelessWidget {
     prefs.clear();
     KeycloakAuth.clear();
     cardsNotifier.clear();
+    channel?.sink.close();
   }
 
   const MyProfilePage(
@@ -252,8 +253,9 @@ class MyProfilePage extends StatelessWidget {
               const Center(
                 child: CircleAvatar(
                   radius: 50,
-                  backgroundImage: NetworkImage(
-                      "https://www.bethowen.ru/upload/iblock/63f/63f2f01ca6828d9574995f549d89a2e0.jpeg"),
+                  // backgroundColor: Theme.of(context).colorScheme.primary,
+                  // child: Icon(Icons.account_circle, size: 100, color: Theme.of(context).primaryColor,),
+                  backgroundImage: AssetImage("assets/images/profile.png"),
                 ),
               ),
               Text(
