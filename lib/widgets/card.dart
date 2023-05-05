@@ -690,7 +690,7 @@ class _TransferListState extends State<TransferList> {
           ),
           subtitle: Row(
             children: [
-              Text(dateFormatter.format(e.createdAt!)),
+              Text(dateFormatter.format(e.createdAt!.toLocal())),
               Expanded(
                   child: Container(
                     alignment: Alignment.centerRight,

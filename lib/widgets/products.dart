@@ -6,7 +6,6 @@ import 'package:client/widgets/card.dart';
 import 'package:client/widgets/registration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 import '../dto/product.dart';
@@ -196,15 +195,6 @@ class _ProductListState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    var cards = [
-      "Дебетовая карта 1",
-      "Дебетовая карта 2",
-      "Дебетовая карта 3",
-      "Дебетовая карта 4",
-      "Дебетовая карта 5",
-      "Дебетовая карта 6",
-      "Дебетовая карта 7",
-    ];
 
     return ListView.separated(
         scrollDirection: Axis.horizontal,

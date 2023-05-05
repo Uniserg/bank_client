@@ -190,7 +190,7 @@ class _OrderListState extends State<OrderList> {
                 productName: _orders[i].productName,
                 address: _orders[i].address,
                 scheduledDate: dateFormatter.format(_orders[i].scheduledDate!),
-                createdAt: dateFormatter.format(_orders[i].createdAt!),
+                createdAt: dateFormatter.format(_orders[i].createdAt!.toLocal()),
                 status: _orders[i].status!);
           }),
     );

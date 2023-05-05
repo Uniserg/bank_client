@@ -9,13 +9,6 @@ import 'package:flutter/material.dart';
 
 import 'exceptions/auth_errors.dart';
 
-void main() {
-  // Переопределяем политику сертификатов, потому что у меня самоподписанный сертификат, который не поддерживается
-  HttpOverrides.global = MyHttpOverrides();
-
-  runApp(const MyApp());
-}
-
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -23,6 +16,12 @@ class MyHttpOverrides extends HttpOverrides {
       ..badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
   }
+}
+
+void main() {
+  // // Переопределяем политику сертификатов, потому что у меня самоподписанный сертификат, который не поддерживается
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(const MyApp());
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
