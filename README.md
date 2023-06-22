@@ -58,4 +58,7 @@ flutter packages pub run build_runner watch
 
 ## GIF
 
-![](https://github.com/Uniserg/bolid_test_flutter/blob/add_edit_sensor_name/shared/bolid_test_flutter.gif)
+![](https://github.com/Uniserg/bank_client/blob/master/shared/registration.gif)
+![](https://github.com/Uniserg/bank_client/blob/master/shared/card_order.gif)
+![](https://github.com/Uniserg/bank_client/blob/master/shared/money_transfer_by_card_number.gif)
+![](https://github.com/Uniserg/bank_client/blob/master/shared/money_transfer_by_phone_number.gif)
