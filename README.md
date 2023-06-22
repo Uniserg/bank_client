@@ -7,7 +7,7 @@
 Загрузите или клонируйте этот репозиторий, используя ссылку ниже:
 
 ```
-https://github.com/Uniserg/bolid_test_flutter.git
+https://github.com/Uniserg/bank_client.git
 ```
 
 **Шаг 2:**
@@ -20,7 +20,7 @@ flutter pub get
 
 **Шаг 3:**
 
-Этот проект использует библиотеку `  json_serializable`, которая работает с генерацией кода, выполните следующую команду для создания файлов:
+Этот проект использует библиотеку `json_serializable`, которая работает с генерацией кода, выполните следующую команду для создания файлов:
 
 ```
 flutter packages pub run build_runner build --delete-conflicting-outputs
